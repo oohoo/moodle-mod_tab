@@ -276,6 +276,70 @@ function tab_delete_instance($id)
 }
 
 /**
+ * Lists all browsable file areas
+ *
+ * @package  mod_tab
+ * @category files
+ * @param stdClass $course course object
+ * @param stdClass $cm course module object
+ * @param stdClass $context context object
+ * @return array
+ */
+function tab_get_file_areas($course, $cm, $context) {
+    $areas = array();
+    $areas['content'] = get_string('content', 'tab');
+    return $areas;
+}
+
+/**
+ * File browsing support for languagelab module content area.
+ *
+ * @package  mod_tab
+ * @category files
+ * @param stdClass $browser file browser instance
+ * @param stdClass $areas file areas
+ * @param stdClass $course course object
+ * @param stdClass $cm course module object
+ * @param stdClass $context context object
+ * @param string $filearea file area
+ * @param int $itemid item ID
+ * @param string $filepath file path
+ * @param string $filename file name
+ * @return file_info instance or null if not found
+ */
+function tab_get_file_info($browser, $areas, $course, $cm, $context, $filearea, $itemid, $filepath, $filename) {
+    global $CFG;
+
+    if (!has_capability('moodle/course:managefiles', $context)) {
+        // students can not peak here!
+        return null;
+    }
+
+    $fs = get_file_storage();
+
+    if ($filearea === 'content') {
+        $filepath = is_null($filepath) ? '/' : $filepath;
+        $filename = is_null($filename) ? '.' : $filename;
+
+        $urlbase = $CFG->wwwroot.'/pluginfile.php';
+        if (!$storedfile = $fs->get_file($context->id, 'mod_tab', 'content', $itemid, $filepath, $filename)) {
+            if ($filepath === '/' and $filename === '.') {
+                $storedfile = new virtual_root_file($context->id, 'mod_tab', 'content', $itemid);
+            } else {
+                // not found
+                return null;
+            }
+        }
+        require_once("$CFG->dirroot/mod/tab/locallib.php");
+        return new tab_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
+    }
+
+    // note: page_intro handled in file_browser automatically
+
+    return null;
+}
+
+/**
  * Serves the tab images or files. Implements needed access control ;-)
  *
  * @global stdClass $CFG
