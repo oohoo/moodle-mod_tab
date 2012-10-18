@@ -208,5 +208,11 @@ function xmldb_tab_upgrade($oldversion = 0)
         // Add acess addinstance for moodle 2.3 compatibility
         upgrade_mod_savepoint(true, 2012090600, 'tab');
     }
+    
+    if ($oldversion < 2012101700)
+    {
+        // Correction for the recent files
+        upgrade_mod_savepoint(true, 2012101700, 'tab');
+    }
 }
 ?>
