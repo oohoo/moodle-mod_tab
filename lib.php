@@ -394,7 +394,7 @@ function tab_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload
     }
 
     // finally send the file
-    send_stored_file($file, 0, 0, true);
+    send_stored_file($file, 0, 0, $forcedownload);
 }
 
 /**
@@ -501,5 +501,3 @@ function tab_get_coursemodule_info($coursemodule)
 
     return $info;
 }
-
-?>
