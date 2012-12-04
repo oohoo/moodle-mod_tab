@@ -20,7 +20,7 @@ Installation
 --------------------------------------------------------------------------------
 
  1. Rename the folder to 'tab'
- 2. Copy the folder tab to moodle/blocks
+ 2. Copy the folder tab to moodle/mod
  3. Install the plugin
 
 --------------------------------------------------------------------------------
