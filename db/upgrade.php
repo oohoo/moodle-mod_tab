@@ -220,5 +220,11 @@ function xmldb_tab_upgrade($oldversion = 0)
         // Correction for flash files that did not appear in the tabs
         upgrade_mod_savepoint(true, 2012120400, 'tab');
     }
+    
+    if ($oldversion < 2012121000)
+    {
+        // Correction for flash files that did not appear in the tabs
+        upgrade_mod_savepoint(true, 2012121000, 'tab');
+    }
 }
 ?>
