@@ -47,4 +47,3 @@ class backup_tab_activity_task extends backup_activity_task {
         return $content;
     }
 }
-?>

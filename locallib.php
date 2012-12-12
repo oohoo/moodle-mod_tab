@@ -173,10 +173,8 @@ function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype)
     // in xhtml strict mode
     if ($mimetype === 'text/html' and check_browser_version('MSIE', 5))
     {
-        debugging("Detected IE", DEBUG_DEVELOPER);
         if (preg_match('(^https?://[^/]*)', $fullurl, $matches))
         {
-            debugging("Detected IE w/ http://", DEBUG_DEVELOPER);
             //make sure we aren't redirecting to a moodle page
             if (strpos($CFG->wwwroot, $matches[0]) !== 0)
             {

@@ -49,6 +49,12 @@ class mod_tab_mod_form extends moodleform_mod
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
+        //Add Intro
+        $this->add_intro_editor(false);
+
+        $mform->setDefault('printintro', 0);
+        $mform->setAdvanced('printintro', false);
+
         //Have to use this option for postgresqgl to work
         $instance = $this->current->instance;
         if (empty($instance))
@@ -130,6 +136,8 @@ class mod_tab_mod_form extends moodleform_mod
         //*********************************************************************************
         //*********************************************************************************
 
+        $mform->setAdvanced('printintro', true);
+
         $features = array('groups' => false, 'groupings' => false, 'groupmembersonly' => true,
             'outcomes' => false, 'gradecat' => false, 'idnumber' => false);
         $this->standard_coursemodule_elements($features);
@@ -174,5 +182,3 @@ class mod_tab_mod_form extends moodleform_mod
     }
 
 }
-
-?>

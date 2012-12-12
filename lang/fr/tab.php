@@ -39,4 +39,3 @@ $string['embed_fail_msg'] = '<p>Votre plugin navigateur peut être manquant un p
 $string['embed_fail_msg_ie'] = '<p>Unable to embed external link. Internet Explorer does not support embedding external web pages at this time.</p>';
 $string['tab:addinstance'] = 'Ajouter un nouvel affichage par onglets';
 $string['tab:view'] = 'Afficher l\'affichage par onglets';
-?>

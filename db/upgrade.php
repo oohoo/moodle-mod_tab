@@ -202,29 +202,37 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2011082300, 'tab');
     }
-    
+
     if ($oldversion < 2012090600)
     {
         // Add acess addinstance for moodle 2.3 compatibility
         upgrade_mod_savepoint(true, 2012090600, 'tab');
     }
-    
+
     if ($oldversion < 2012101700)
     {
         // Correction for the recent files
         upgrade_mod_savepoint(true, 2012101700, 'tab');
     }
-    
+
     if ($oldversion < 2012120400)
     {
         // Correction for flash files that did not appear in the tabs
         upgrade_mod_savepoint(true, 2012120400, 'tab');
     }
-    
+
     if ($oldversion < 2012121000)
     {
         // Correction for flash files that did not appear in the tabs
         upgrade_mod_savepoint(true, 2012121000, 'tab');
     }
+
+    if ($oldversion < 2012121200)
+    {
+        // + Add description available
+        // + Add PDF embed in a tab
+        
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2012121200, 'tab');
+    }
 }
-?>

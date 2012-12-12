@@ -98,6 +98,14 @@ $results = $DB->get_records_sql('SELECT {course_modules}.id as id,{course_module
 
 $tabdisplay = '';
 
+//Add the description if exists
+if (trim(strip_tags($tab->intro)))
+{
+    $tabdisplay .= $OUTPUT->box_start('mod_tab_introbox', 'tabintro');
+    $tabdisplay .= format_module_intro('tab', $tab, $cm->id);
+    $tabdisplay .= $OUTPUT->box_end();
+}
+
 if ($tab->displaymenu == 1)
 {
 
@@ -188,12 +196,25 @@ foreach (array_keys($options) as $key)
         }
         $content[$key] = file_rewrite_pluginfile_urls($options[$key]->tabcontent, 'pluginfile.php', $context->id, 'mod_tab', 'content', $options[$key]->id);
         $content[$key] = format_text($content[$key], FORMAT_MOODLE, $editoroptions, $context);
+        //PDF
+        $content2 = str_ireplace(array(' ', "\n", "\r", "\t", '&nbsp;'), array(), strip_tags($content[$key], '<a>'));
+        
+        if (stripos($content2, '<a') === 0 && stripos($content2, '</a>') >= strlen($content2) - 4)
+        {
+            $start = strpos($content2, '"')+1;
+            $l = strpos($content2, '"', $start+1) - $start;
+            
+            $href = substr($content2, $start, $l);
+            if(stripos($href, '.pdf') !== false)
+            {
+                $externalurl[$key] = $href;
+            }
+        }
     }
     //Enter into proper div
     //Check for pdf
     if (!empty($externalurl[$key]) && preg_match('/\bpdf\b/i', $externalurl[$key]))
     {
-        debugging("Tabdisplay: Found pdf->external_url=" . $externalurl[$key], DEBUG_DEVELOPER);
         $html_content = tab_embed_general(process_urls($externalurl[$key]), '', get_string('embed_fail_msg', 'tab') . "<a href='$externalurl[$key]' target='_blank' >" . get_string('embed_fail_link_text', 'tab') . '</a>', 'application/pdf');
     }
     elseif (!empty($externalurl[$key]))

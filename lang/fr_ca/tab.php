@@ -30,4 +30,3 @@ $string['menuname'] = 'Nom du menu';
 $string['embed_fail_link_text'] = 'Cliquez ici pour ouvrir le lien.';
 $string['embed_fail_msg'] = '<p>Votre plugin navigateur peut manquer un plugin requis ou le type de lien ne peut être pris en charge pour ce temps.</p>';
 $string['embed_fail_msg_ie'] = '<p>Unable to embed external link. Internet Explorer does not support embedding external web pages at this time.</p>';
-?>
