@@ -45,7 +45,7 @@ M.mod_tab.init_maximised_embed = function(Y, id) {
 
         var headerheight = get_htmlelement_size('page-header', 'height');
         var footerheight = get_htmlelement_size('page-footer', 'height');
-        var newheight = parseInt(YAHOO.util.Dom.getViewportHeight()) - footerheight - headerheight - 20;
+        var newheight = parseInt(Y.one("body").get("winHeight")) - footerheight - headerheight - 20;
         if (newheight < 400) {
             newheight = 400;
         }
