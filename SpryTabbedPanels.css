@@ -88,6 +88,7 @@
         -webkit-border-top-left-radius: 5px;
     color: #FFF;
 }
+.dir-rtl .TabbedPanelsTab {float: right;}
 
 /* This selector is an example of how to change the appearnce of a tab button
  * container as the mouse enters it. The class "TabbedPanelsTabHover" is
@@ -198,6 +199,7 @@
 	border-bottom: solid 1px #CCC;
     color: #003300;
 }
+.dir-rtl .VTabbedPanels .TabbedPanelsTabGroup {float: right;}
 
 /* This selector disables the float property that is placed on each tab button
  * by the default TabbedPanelsTab selector rule above. It also draws a bottom
@@ -232,6 +234,7 @@
 	width: 30em;
 	height: 20em;
 }
+.dir-rtl .VTabbedPanels .TabbedPanelsContentGroup {float:right;}
 
 /* Styles for Printing */
 @media print {
