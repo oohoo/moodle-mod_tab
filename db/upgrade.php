@@ -243,4 +243,12 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2013010200, 'tab');
     }
+    
+    if ($oldversion < 2013021200)
+    {
+        // + Add the RTL support. Thanks to nadavkav
+        
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2013021200, 'tab');
+    }
 }
