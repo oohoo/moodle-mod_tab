@@ -120,7 +120,7 @@ class mod_tab_mod_form extends moodleform_mod
         $mform->setType('tabcontentorder', PARAM_INT);
         $mform->setType('optionid', PARAM_INT);
         $repeateloptions['content']['helpbutton'] = array('content', 'tab');
-        $mform->setType('content', PARAM_CLEAN);
+        $mform->setType('content', PARAM_RAW);
 
         $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeats', 'option_add_fields', 1, get_string('addtab', 'tab'));
         //-----------------------------------------------------------------------------------------------------------------------------------------------

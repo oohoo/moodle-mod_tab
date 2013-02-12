@@ -251,4 +251,12 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2013021200, 'tab');
     }
+    
+    if ($oldversion < 2013021201)
+    {
+        // + Correction on the tab content to allow to put custom HTML like object tag, etc. => change the settype from TYPE_CLEAN to TYPE_RAW
+        
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2013021201, 'tab');
+    }
 }
