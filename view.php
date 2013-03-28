@@ -54,7 +54,7 @@ $context = get_context_instance(CONTEXT_MODULE, $cm->id);
 $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
 
 require_capability('mod/tab:view', $context);
-add_to_log($course->id, "tab", "view", "view.php?id=$cm->id", "$tab->id");
+add_to_log($course->id, "tab", "view", "view.php?id=$cm->id", "$tab->id - $tab->name");
 
 // Update 'viewed' state if required by completion system
 $completion = new completion_info($course);

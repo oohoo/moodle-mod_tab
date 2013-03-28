@@ -413,7 +413,7 @@ function tab_user_outline($course, $user, $mod, $tab)
     global $DB;
 
     if ($logs = $DB->get_records('log', array('userid' => $user->id, 'module' => 'tab',
-        'action' => 'view', 'info' => $tab->id), 'time ASC'))
+        'action' => 'view', 'info' => $tab->id. ' - '.$tab->name), 'time ASC'))
     {
 
         $numviews = count($logs);
@@ -442,7 +442,7 @@ function tab_user_complete($course, $user, $mod, $tab)
     global $CFG, $DB;
 
     if ($logs = $DB->get_records('log', array('userid' => $user->id, 'module' => 'tab',
-        'action' => 'view', 'info' => $tab->id), 'time ASC'))
+        'action' => 'view', 'info' => $tab->id. ' - '.$tab->name), 'time ASC'))
     {
         $numviews = count($logs);
         $lastlog = array_pop($logs);
