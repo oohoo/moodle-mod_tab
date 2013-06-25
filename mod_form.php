@@ -101,7 +101,15 @@ class mod_tab_mod_form extends moodleform_mod
         $repeatarray[] = $mform->createElement('hidden', 'revision', 1);
         $repeatarray[] = $mform->createElement('select', 'tabcontentorder', get_string('order', 'tab'), $taborderarray);
         $repeatarray[] = $mform->createElement('hidden', 'optionid', 0);
-
+        
+        $mform->setType('tabname', PARAM_TEXT);
+        $mform->setType('content', PARAM_RAW);
+        $mform->setType('externalurl', PARAM_URL);
+        $mform->setType('revision', PARAM_INT);
+        $mform->setType('tabcontentorder', PARAM_INT);
+        $mform->setType('optionid', PARAM_INT);
+        $mform->setType('content', PARAM_RAW);
+                
         if ($this->_instance)
         {
             $repeatno = $DB->count_records('tab_content', array('tabid' => $instance));
@@ -117,10 +125,9 @@ class mod_tab_mod_form extends moodleform_mod
         {
             $repeateloptions['tabcontentorder']['default'] = $i - 2;
         }
-        $mform->setType('tabcontentorder', PARAM_INT);
-        $mform->setType('optionid', PARAM_INT);
+
         $repeateloptions['content']['helpbutton'] = array('content', 'tab');
-        $mform->setType('content', PARAM_RAW);
+
 
         $this->repeat_elements($repeatarray, $repeatno, $repeateloptions, 'option_repeats', 'option_add_fields', 1, get_string('addtab', 'tab'));
         //-----------------------------------------------------------------------------------------------------------------------------------------------
@@ -133,6 +140,9 @@ class mod_tab_mod_form extends moodleform_mod
         $mform->addElement('text', 'taborder', get_string('taborder', 'tab'), array('size' => '15'));
         $mform->addElement('text', 'menuname', get_string('menuname', 'tab'), array('size' => '45'));
 
+        $mform->setType('taborder', PARAM_INT);
+        $mform->setType('menuname', PARAM_TEXT);
+        
         //*********************************************************************************
         //*********************************************************************************
 

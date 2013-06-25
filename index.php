@@ -31,6 +31,8 @@ $strname = get_string('name');
 $strintro = get_string('moduleintro');
 $strlastmodified = get_string('lastmodified');
 
+$modinfo = get_fast_modinfo($course);
+
 $PAGE->set_url('/mod/tab/index.php', array('id' => $course->id));
 $PAGE->set_title($course->shortname . ': ' . $strpages);
 $PAGE->set_heading($course->fullname);
@@ -44,9 +46,10 @@ if (!$tabs = get_all_instances_in_course('tab', $course))
 }
 
 $usesections = course_format_uses_sections($course->format);
+
 if ($usesections)
 {
-    $sections = get_all_sections($course->id);
+    $sections = $modinfo->get_section_info_all($course->id);
 }
 
 $table = new html_table();
@@ -63,7 +66,7 @@ else
     $table->align = array('left', 'left', 'left');
 }
 
-$modinfo = get_fast_modinfo($course);
+
 $currentsection = '';
 foreach ($tabs as $tab)
 {
