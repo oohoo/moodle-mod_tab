@@ -267,4 +267,10 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2013032800, 'tab');
     }
+    
+    if ($oldversion < 2013062500)
+    {
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2013062500, 'tab');
+    }
 }
