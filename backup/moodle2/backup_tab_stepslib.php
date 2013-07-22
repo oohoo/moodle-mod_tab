@@ -27,7 +27,8 @@ class backup_tab_activity_structure_step extends backup_activity_structure_step
         $userinfo = $this->get_setting_value('userinfo');
 
         // Define each element separated
-        $tab = new backup_nested_element('tab', array('id'), array('name', 'displaymenu', 'menuname', 'taborder', 'timemodified'));
+        $tab = new backup_nested_element('tab', array('id'), array('name', 'intro', 
+                    'css', 'menucss', 'displaymenu', 'menuname', 'taborder', 'legacyfiles', 'legacyfileslast', 'timemodified', 'introformat'));
 
         $tab_contents = new backup_nested_element('tab_contents');
 
@@ -47,6 +48,7 @@ class backup_tab_activity_structure_step extends backup_activity_structure_step
         // Define id annotations
         //$tab_content->annotate_ids('tabid', 'tabid');
         // Define file annotations
+        $tab->annotate_files('mod_tab', 'intro', null);
         $tab_content->annotate_files('mod_tab', 'content', 'id');
 
         // Return the root element (tab), wrapped into standard activity structure

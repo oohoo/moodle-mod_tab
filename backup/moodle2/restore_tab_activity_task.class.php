@@ -49,6 +49,9 @@ class restore_tab_activity_task extends restore_activity_task
     {
         $contents = array();
 
+        $contents[] = new restore_decode_content('tab', array('intro'), 'tab');
+        $contents[] = new restore_decode_content('tab_content', array('tabcontent'), 'tab_content');
+        
         return $contents;
     }
 
@@ -56,11 +59,13 @@ class restore_tab_activity_task extends restore_activity_task
      * Define the decoding rules for links belonging
      * to the activity to be executed by the link decoder
      */
-    static public function define_decode_rules()
-    {
+    static public function define_decode_rules() {
         $rules = array();
 
+        $rules[] = new restore_decode_rule('TABVIEWBYID', '/mod/tab/view.php?id=$1', 'course_module');
+
         return $rules;
+
     }
 
 }

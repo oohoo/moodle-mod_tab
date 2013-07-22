@@ -70,6 +70,7 @@ class restore_tab_activity_structure_step extends restore_activity_structure_ste
     {
         global $DB;
         // Add tab related files where itemname = tab_content (taken from $this->set_mapping)
+        $this->add_related_files('mod_tab', 'intro', null);
         $this->add_related_files('mod_tab', 'content', 'tab_content');
     }
 
