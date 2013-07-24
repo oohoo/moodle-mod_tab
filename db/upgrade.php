@@ -280,4 +280,11 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2013072200, 'tab');
     }
+    
+    if ($oldversion < 2013072400)
+    {
+        //+Patch on filters
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2013072400, 'tab');
+    }
 }

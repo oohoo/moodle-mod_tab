@@ -177,7 +177,7 @@ foreach (array_keys($options) as $key)
 
     $externalurl[$key] = $options[$key]->externalurl;
     //Eventually give option for height within the form. Pass this by others, because it could be confusing.
-    $iframehieght[$key] = '600px';
+    $iframeheight[$key] = '600px';
 
     if (!empty($externalurl[$key]))
     {
@@ -189,13 +189,12 @@ foreach (array_keys($options) as $key)
     }
     else
     {
-
         if (empty($options[$key]->format))
         {
             $options[$key]->format = 1;
         }
         $content[$key] = file_rewrite_pluginfile_urls($options[$key]->tabcontent, 'pluginfile.php', $context->id, 'mod_tab', 'content', $options[$key]->id);
-        $content[$key] = format_text($content[$key], FORMAT_MOODLE, $editoroptions, $context);
+        $content[$key] = format_text($content[$key], $options[$key]->contentformat, $editoroptions, $context);
         //PDF
         $content2 = str_ireplace(array(' ', "\n", "\r", "\t", '&nbsp;'), array(), strip_tags($content[$key], '<a>'));
         
