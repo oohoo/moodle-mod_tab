@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * *************************************************************************
  * *                         OOHOO - Tab Display                          **
@@ -12,7 +12,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die; 
 
 /**
  * This function is run when the plugin have to be updated
@@ -286,5 +286,12 @@ function xmldb_tab_upgrade($oldversion = 0)
         //+Patch on filters
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2013072400, 'tab');
+    }
+    
+    if ($oldversion < 2014040200)
+    {
+        //+ Moodle 2.6 Update
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2014040200, 'tab');
     }
 }

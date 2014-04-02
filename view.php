@@ -50,8 +50,17 @@ else
 $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
 
 require_course_login($course, true, $cm);
-$context = get_context_instance(CONTEXT_MODULE, $cm->id);
-$coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+//Replace get_context_instance by the class for moodle 2.6+
+if(class_exists('context_module'))
+{
+    $context = context_module::instance($cmid);
+    $coursecontext = context_course::instance($course->id);
+}
+else
+{
+    $context = get_context_instance(CONTEXT_MODULE, $cmid);
+    $coursecontext = get_context_instance(CONTEXT_COURSE, $course->id);
+}
 
 require_capability('mod/tab:view', $context);
 add_to_log($course->id, "tab", "view", "view.php?id=$cm->id", "$tab->id - $tab->name");

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * *************************************************************************
  * *                         OOHOO - Tab Display                          **
@@ -12,7 +12,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-$string['ajouter'] = 'Ajouter un onglet';
+$string['ajouter'] = 'Ajouter un onglet'; 
 $string['addtab'] = 'Àjouter un onglet';
 $string['changestyle'] = 'Modifier la feuille de style';
 $string['css'] = 'feuille de style';

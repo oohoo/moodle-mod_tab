@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * *************************************************************************
  * *                         OOHOO - Tab Display                          **
@@ -12,7 +12,7 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-$string['name'] = 'Nom';
+$string['name'] = 'Nom'; 
 $string['modulename'] = 'Onglet';
 $string['ajouter'] = 'Ajouter un onglet';
 $string['modulenameplural'] = 'Onglets';
