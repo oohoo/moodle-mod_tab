@@ -63,9 +63,10 @@ class mod_tab_mod_form extends moodleform_mod
         }
 
         //following code used to create tabcontent order numbers
-        if (isset($_POST['optionid']))
+        $optionid = optional_param_array('optionid', array(), PARAM_INT);
+        if (isset($optionid))
         {
-            $repeatnum = count($_POST['optionid']);
+            $repeatnum = count($optionid);
         }
         else
         {
