@@ -294,4 +294,10 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2014040200, 'tab');
     }
+    if ($oldversion < 2016053102)
+    {
+        //+ Moodle 3.0 Update
+        // tab savepoint reached
+        upgrade_mod_savepoint(true, 2016053102, 'tab');
+    }
 }

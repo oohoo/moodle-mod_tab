@@ -50,7 +50,7 @@ class mod_tab_mod_form extends moodleform_mod
         $mform->addRule('name', null, 'required', null, 'client');
 
         //Add Intro
-        $this->add_intro_editor(false);
+        $this->standard_intro_elements(false);
 
         $mform->setDefault('printintro', 0);
         $mform->setAdvanced('printintro', false);

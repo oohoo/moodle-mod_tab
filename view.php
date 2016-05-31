@@ -18,6 +18,7 @@ require_once("lib.php");
 require_once("locallib.php");
 require_once($CFG->dirroot . '/lib/resourcelib.php');
 require_once($CFG->dirroot . '/lib/completionlib.php');
+require_once($CFG->dirroot . '/mod/tab/classes/event/course_module_viewed.php');
 
 $id = optional_param('id', 0, PARAM_INT); // Course Module ID, or
 $a = optional_param('a', 0, PARAM_INT); // tab ID
@@ -63,7 +64,6 @@ else
 }
 
 require_capability('mod/tab:view', $context);
-add_to_log($course->id, "tab", "view", "view.php?id=$cm->id", "$tab->id - $tab->name");
 
 // Update 'viewed' state if required by completion system
 $completion = new completion_info($course);
@@ -88,6 +88,16 @@ $PAGE->requires->js('/mod/tab/js/SpryTabbedPanels.js', true);
 $PAGE->requires->js('/mod/tab/js/tab.js');
 $PAGE->requires->css('/mod/tab/SpryTabbedPanels.css');
 $PAGE->requires->css('/mod/tab/styles.css');
+
+//log the view information
+$event = \mod_tab\event\course_module_viewed::create(array(
+    'objectid' => $PAGE->cm->instance,
+    'context' => $PAGE->context,
+));
+$event->add_record_snapshot('course', $PAGE->course);
+$event->add_record_snapshot($PAGE->cm->modname, $tab);
+$event->trigger();
+
 echo $OUTPUT->header();
 
 //echo $OUTPUT->heading(format_string($tab->name), 2, 'main', 'pageheading');
@@ -186,8 +196,8 @@ foreach (array_keys($options) as $key)
 
     $externalurl[$key] = $options[$key]->externalurl;
     //Eventually give option for height within the form. Pass this by others, because it could be confusing.
-    $iframeheight[$key] = '600px';
-
+    $iframeheight[$key] = '800px';
+    
     if (!empty($externalurl[$key]))
     {
         //todo check url
@@ -195,6 +205,8 @@ foreach (array_keys($options) as $key)
         {
             $externalurl[$key] = 'http://' . $externalurl[$key];
         }
+        
+        
     }
     else
     {

@@ -22,8 +22,6 @@ $course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
 require_course_login($course, true);
 $PAGE->set_pagelayout('incourse');
 
-add_to_log($course->id, 'tab', 'view all', "index.php?id=$course->id", '');
-
 $strpage = get_string('modulename', 'tab');
 $strpages = get_string('modulenameplural', 'tab');
 $strsectionname = get_string('sectionname', 'format_' . $course->format);
@@ -38,6 +36,17 @@ $PAGE->set_title($course->shortname . ': ' . $strpages);
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add($strpages);
 echo $OUTPUT->header();
+
+//log the view information
+$event = \mod_tab\event\course_module_instance_list_viewed::create(array(
+    'objectid' => $PAGE->cm->instance,
+    'context' => $PAGE->context,
+));
+$event->add_record_snapshot('course', $PAGE->course);
+$event->add_record_snapshot($PAGE->cm->modname, $tab);
+$event->trigger();
+
+
 
 if (!$tabs = get_all_instances_in_course('tab', $course))
 {
