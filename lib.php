@@ -122,7 +122,7 @@ function tab_add_instance($tab)
             $value = trim($value);
             if (isset($value) && $value <> '')
             {
-                $option = new object();
+                $option = new stdClass();
                 $option->tabname = $value;
                 $option->tabid = $tab->id;
 
@@ -153,7 +153,7 @@ function tab_add_instance($tab)
                     $draftitemid = $tab->content[$key]['itemid'];
                     if ($draftitemid)
                     {
-                        $tabcontentupdate = new object();
+                        $tabcontentupdate = new stdClass();
                         $tabcontentupdate->id = $newtab_content_id;
                         $tabcontentupdate->tabcontent = file_save_draft_area_files($draftitemid, $context->id, 'mod_tab', 'content', $newtab_content_id, $editoroptions, $tab->content[$key]['text']);
                         $DB->update_record('tab_content', $tabcontentupdate);
@@ -204,7 +204,7 @@ function tab_update_instance($tab)
 
 
         $value = trim($value);
-        $option = new object();
+        $option = new stdClass();
         $option->tabname = $value;
         $option->tabcontentorder = $tab->tabcontentorder[$key];
         $option->externalurl = $tab->externalurl[$key];
@@ -245,7 +245,7 @@ function tab_update_instance($tab)
                     $draftitemid = $tab->content[$key]['itemid'];
                     if ($draftitemid)
                     {
-                        $tabcontentupdate = new object();
+                        $tabcontentupdate = new stdClass();
                         $tabcontentupdate->id = $newtab_content_id;
                         $tabcontentupdate->tabcontent = file_save_draft_area_files($draftitemid, $context->id, 'mod_tab', 'content', $newtab_content_id, $editoroptions, $tab->content[$key]['text']);
                         $DB->update_record('tab_content', $tabcontentupdate);
