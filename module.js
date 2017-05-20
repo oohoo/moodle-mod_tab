@@ -1,60 +1,54 @@
 /**
  * *************************************************************************
- * *                         OOHOO - Tab Display                          **
+ * *                 OOHOO Tab topics Course format                       **
  * *************************************************************************
- * @package     mod                                                       **
- * @subpackage  tab                                                       **
- * @name        tab                                                       **
+ * @package     format                                                    **
+ * @subpackage  tabtopics                                                 **
+ * @name        tabtopics                                                 **
  * @copyright   oohoo.biz                                                 **
  * @link        http://oohoo.biz                                          **
- * @author      Patrick Thibaudeau                                        **
+ * @author      Nicolas Bretin                                            **
+ * @author      Braedan Jongerius                                         **
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-M.mod_tab = {};
+M.tabtopics=
+{
+    init : function(Y)
+    {
+        Y.use('tabview', function(Y)
+        {
+            var tabview = new Y.TabView(
+            {
+                srcNode: '#sections'
+            });
+            
+            tabview.render();
+    		//get highlighted section
+			counter = 0;
+			thisone = 0;
+			Y.all('#sections .yui3-tabview-list li').each(function (node) {
+				if (node.one('#marker')) {
+					thisone = counter;
+				}
+				counter++;
+			});
+			
+            //get the URL param to select the good section by  default
+            var url=document.URL.split('#');
+            if(url.length > 1)
+            {
+                //The index start at 0 so -1
+                var sectionnum = parseInt(url[1].split('-')[1])-1;
+                tabview.selectChild(sectionnum);
+            } else {
+				tabview.selectChild(thisone);
+			}
 
-/** Useful for full embedding of various stuff */
-M.mod_tab.init_maximised_embed = function(Y, id) {
-    var obj = Y.one('#'+id);
-    if (!obj) {
-        return;
+        });
+        addonload(function()
+        {
+            document.getElementById("maincontainer").style.display='';
+        }); 
     }
-
-
-    var get_htmlelement_size = function(el, prop) {
-        if (Y.Lang.isString(el)) {
-            el = Y.one('#' + el);
-        }
-        var val = el.getStyle(prop);
-        if (val == 'auto') {
-            val = el.getComputedStyle(prop);
-        }
-        return parseInt(val);
-    };
-
-    var resize_object = function() {
-        obj.setStyle('width', '0px');
-        obj.setStyle('height', '0px');
-        var newwidth = get_htmlelement_size(Y.one(".TabbedPanelsContentVisible"), 'width') - 15;
-
-        if (newwidth > 600) {
-            obj.setStyle('width', newwidth  + 'px');
-        } else {
-            obj.setStyle('width', '600px');
-        }
-
-        var headerheight = get_htmlelement_size('page-header', 'height');
-        var footerheight = get_htmlelement_size('page-footer', 'height');
-        var newheight = parseInt(Y.one("body").get("winHeight")) - footerheight - headerheight - 20;
-        if (newheight < 400) {
-            newheight = 400;
-        }
-        obj.setStyle('height', newheight+'px');
-    };
-
-    resize_object();
-    // fix layout if window resized too
-    window.onresize = function() {
-        resize_object();
-    };
-};
+}
