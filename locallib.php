@@ -96,7 +96,7 @@ function process_urls($string) {
 function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
     global $CFG, $PAGE;
 
-    $iframe = false;
+    $iframe = true;
     $force_link = false;
 
     $id_suffix = md5($fullurl);
@@ -104,7 +104,7 @@ function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
     if ($iframe) {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
-  <iframe id="resourceobject_$id_suffix" src="$fullurl">
+  <iframe src="$fullurl" class="mod-tab-embedded">
     $clicktoopen
   </iframe>
 </div>
