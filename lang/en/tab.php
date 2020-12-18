@@ -52,3 +52,4 @@ $string['taborder'] = 'Tab display activity order within menu';
 $string['tab:addinstance'] = 'Add a new Tab Display';
 $string['tab:view'] = 'View Tabs';
 $string['updatethis'] = 'Update this tab display';
+$string['privacy:metadata'] = 'The Tab display activity only displays content data.';
