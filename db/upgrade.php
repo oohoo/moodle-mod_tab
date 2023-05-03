@@ -306,4 +306,6 @@ function xmldb_tab_upgrade($oldversion = 0)
         // tab savepoint reached
         upgrade_mod_savepoint(true, 2019062400, 'tab');
     }
+
+    return true;
 }
