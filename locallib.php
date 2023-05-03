@@ -120,7 +120,7 @@ EOT;
 EOT;
     }
 
-    $PAGE->requires->js_init_call('M.mod_tab.init_maximised_embed', array("resourceobject_$id_suffix"), true);
+    $PAGE->requires->js_call_amd('mod_tab/module', 'init', ["resourceobject_$id_suffix"]);
 
     return $code;
 }
