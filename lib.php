@@ -106,15 +106,7 @@ function tab_add_instance($tab)
 
         // we need to use context now, so we need to make sure all needed info is already in db
         $DB->set_field('course_modules', 'instance', $tab->id, array('id' => $cmid));
-        //Replace get_context_instance by the class for moodle 2.6+
-        if(class_exists('context_module'))
-        {
-            $context = context_module::instance($cmid);
-        }
-        else
-        {
-            $context = get_context_instance(CONTEXT_MODULE, $cmid);
-        }
+        $context = context_module::instance($cmid);
         $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => true);
 
         foreach ($tab->tabname as $key => $value)
@@ -191,15 +183,7 @@ function tab_update_instance($tab)
 
         // we need to use context now, so we need to make sure all needed info is already in db
         $DB->set_field('course_modules', 'instance', $tab->id, array('id' => $cmid));
-        //Replace get_context_instance by the class for moodle 2.6+
-        if(class_exists('context_module'))
-        {
-            $context = context_module::instance($cmid);
-        }
-        else
-        {
-            $context = get_context_instance(CONTEXT_MODULE, $cmid);
-        }
+        $context = context_module::instance($cmid);
         $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => true);
 
 
