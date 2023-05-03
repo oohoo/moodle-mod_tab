@@ -104,7 +104,7 @@ function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
     if ($iframe) {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
-  <iframe src="$fullurl" class="mod-tab-embedded">
+  <iframe id="resourceobject_$id_suffix" src="$fullurl" class="mod-tab-embedded">
     $clicktoopen
   </iframe>
 </div>
