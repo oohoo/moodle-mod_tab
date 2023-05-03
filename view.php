@@ -25,19 +25,19 @@ $a = optional_param('a', 0, PARAM_INT); // tab ID
 
 if ($id) {
     if (!$cm = get_coursemodule_from_id("tab", $id)) {
-        error("Course Module ID was incorrect");
+        throw new moodle_exception("Course Module ID was incorrect");
     }
 
     if (!$tab = $DB->get_record("tab", array("id" => $cm->instance))) {
-        error("Course module is incorrect");
+        throw new moodle_exception("Course module is incorrect");
     }
 } else {
     if (!$tab = $DB->get_record("tab", array("id" => $a))) {
-        error("Course module is incorrect");
+        throw new moodle_exception("Course module is incorrect");
     }
 
     if (!$cm = get_coursemodule_from_instance("tab", $tab->id, $course->id)) {
-        error("Course Module ID was incorrect");
+        throw new moodle_exception("Course Module ID was incorrect");
     }
 }
 
