@@ -1,4 +1,5 @@
 <?php
+
 namespace mod_tab\event;
 
 defined('MOODLE_INTERNAL') || die();
@@ -15,4 +16,5 @@ defined('MOODLE_INTERNAL') || die();
  *
  * @author patrick
  */
-class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {}
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+}

@@ -66,9 +66,9 @@ $PAGE->requires->css('/mod/tab/styles.css');
 
 //log the view information
 $event = \mod_tab\event\course_module_viewed::create(array(
-            'objectid' => $PAGE->cm->instance,
-            'context' => $PAGE->context,
-        ));
+    'objectid' => $PAGE->cm->instance,
+    'context' => $PAGE->context,
+));
 $event->add_record_snapshot('course', $PAGE->course);
 $event->add_record_snapshot($PAGE->cm->modname, $tab);
 $event->trigger();
@@ -76,7 +76,7 @@ $event->trigger();
 echo $OUTPUT->header();
 
 $output = $PAGE->get_renderer('mod_tab');
-$view = new \mod_tab\output\view($tab,$course->id, $cm);
+$view = new \mod_tab\output\view($tab, $course->id, $cm);
 echo $output->render_view($view);
 
 echo $OUTPUT->footer();

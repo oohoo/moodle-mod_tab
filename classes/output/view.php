@@ -15,11 +15,13 @@
 
 namespace mod_tab\output;
 
+use stdClass;
+
 /**
- * 
- * @global \stdClass $USER
+ *
  * @param \renderer_base $output
  * @return array
+ * @global \stdClass $USER
  */
 class view implements \renderable, \templatable {
 
@@ -29,17 +31,12 @@ class view implements \renderable, \templatable {
     private $cm;
 
     /**
-     * 
-     * @global type $CFG
-     * @global \stdClass $USER
-     * @global \moodle_database $DB
-     * @param array $tab
+     *
+     * @param stdClass $tab
      * @param int $courseId
-     * @param array $cm
+     * @param stdClass $cm
      */
     public function __construct($tab, $courseId, $cm) {
-        global $CFG, $USER, $DB;
-
         $this->tab = $tab;
         $this->courseId = $courseId;
         $this->courseContext = \context_course::instance($courseId);
@@ -47,14 +44,14 @@ class view implements \renderable, \templatable {
     }
 
     /**
-     * 
-     * @global \stdClass $USER
-     * @global \moodle_database $DB
+     *
      * @param \renderer_base $output
      * @return array
+     * @global \stdClass $USER
+     * @global \moodle_database $DB
      */
     public function export_for_template(\renderer_base $output) {
-        global $CFG, $USER, $DB, $COURSE;
+        global $CFG;
 
         $tab = $this->tab;
         $cm = $this->cm;
@@ -114,22 +111,14 @@ class view implements \renderable, \templatable {
 
     private function getTabContent() {
         global $CFG, $DB;
-        
+
         $context = \context_module::instance($this->cm->id);
         $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => true);
         $options = $DB->get_records('tab_content', array('tabid' => $this->tab->id), 'tabcontentorder');
         $contents = [];
         $i = 0;
         foreach ($options as $option) {
-
-            //New conditions now exist. Must verify if embedding a pdf or url
-            //Content must change accordingly
-            //$pdffile[$key] = $options[$key]->pdffile;
-
-
             $externalurl = $option->externalurl;
-            //Eventually give option for height within the form. Pass this by others, because it could be confusing.
-            $iframeheight = '800px';
 
             if (!empty($externalurl)) {
                 //todo check url
@@ -167,13 +156,13 @@ class view implements \renderable, \templatable {
             $contents[$i]['name'] = $option->tabname;
             $contents[$i]['id'] = $option->id;
             if ($i == 0) {
-               $contents[$i]['active'] = true; 
+                $contents[$i]['active'] = true;
             } else {
                 $contents[$i]['active'] = false;
             }
             $i++;
         }
-        
+
         return $contents;
     }
 

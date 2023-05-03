@@ -18,8 +18,7 @@ defined('MOODLE_INTERNAL') || die();
 /**
  * Tab Display conversion handler
  */
-class moodle1_mod_tab_handler extends moodle1_mod_handler
-{
+class moodle1_mod_tab_handler extends moodle1_mod_handler {
 
     /** @var moodle1_file_manager */
     protected $fileman = null;
@@ -40,21 +39,20 @@ class moodle1_mod_tab_handler extends moodle1_mod_handler
      *
      * @return array of {@link convert_path} instances
      */
-    public function get_paths()
-    {
+    public function get_paths() {
         return array(
             new convert_path('tab', '/MOODLE_BACKUP/COURSE/MODULES/MOD/TAB'),
             new convert_path('tab_contents', '/MOODLE_BACKUP/COURSE/MODULES/MOD/TAB/TABCONTENTS'),
             new convert_path('tab_content', '/MOODLE_BACKUP/COURSE/MODULES/MOD/TAB/TABCONTENTS/TABCONTENT',
-                    array(
-                        'renamefields' => array(
-                            'format' => 'contentformat',
-                        ),
-                        'newfields' => array(
-                            'externalurl' => NULL,
-                            'contentformat' => 1,
-                        ),
-                    )
+                array(
+                    'renamefields' => array(
+                        'format' => 'contentformat',
+                    ),
+                    'newfields' => array(
+                        'externalurl' => NULL,
+                        'contentformat' => 1,
+                    ),
+                )
             ),
         );
     }
@@ -63,8 +61,7 @@ class moodle1_mod_tab_handler extends moodle1_mod_handler
      * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/TAB
      * data available
      */
-    public function process_tab($data)
-    {
+    public function process_tab($data) {
 
         // get the course module id and context id
         $instanceid = $data['id'];
@@ -85,10 +82,8 @@ class moodle1_mod_tab_handler extends moodle1_mod_handler
             'modulename' => 'tab', 'contextid' => $contextid));
         $this->xmlwriter->begin_tag('tab', array('id' => $instanceid));
 
-        foreach ($data as $field => $value)
-        {
-            if ($field <> 'id')
-            {
+        foreach ($data as $field => $value) {
+            if ($field <> 'id') {
                 $this->xmlwriter->full_tag($field, $value);
             }
         }
@@ -99,8 +94,7 @@ class moodle1_mod_tab_handler extends moodle1_mod_handler
     /**
      * This is executed when the parser reaches the <OPTIONS> opening element
      */
-    public function on_tab_contents_start()
-    {
+    public function on_tab_contents_start() {
         $this->xmlwriter->begin_tag('tab_contents');
     }
 
@@ -108,42 +102,25 @@ class moodle1_mod_tab_handler extends moodle1_mod_handler
      * This is executed every time we have one /MOODLE_BACKUP/COURSE/MODULES/MOD/CHOICE/OPTIONS/OPTION
      * data available
      */
-    public function process_tab_content($data)
-    {
+    public function process_tab_content($data) {
         $this->write_xml('tab_content', $data, array('/tab_content/id'));
     }
 
     /**
      * This is executed when the parser reaches the closing </OPTIONS> element
      */
-    public function on_tab_contents_end()
-    {
+    public function on_tab_contents_end() {
         $this->xmlwriter->end_tag('tab_contents');
     }
 
     /**
      * This is executed when we reach the closing </MOD> tag of our 'choice' path
      */
-    public function on_tab_end()
-    {
+    public function on_tab_end() {
         // finalize tab.xml
         $this->xmlwriter->end_tag('tab');
         $this->xmlwriter->end_tag('activity');
         $this->close_xml_writer();
-
-        // write inforef.xml
-        /*
-          $this->open_xml_writer("activities/tab_{$this->moduleid}/inforef.xml");
-          $this->xmlwriter->begin_tag('inforef');
-          $this->xmlwriter->begin_tag('fileref');
-          foreach ($this->fileman->get_fileids() as $fileid) {
-          $this->write_xml('file', array('id' => $fileid));
-          }
-          $this->xmlwriter->end_tag('fileref');
-          $this->xmlwriter->end_tag('inforef');
-          $this->close_xml_writer();
-         *
-         */
     }
 
 }

@@ -12,46 +12,48 @@
  * *************************************************************************
  * ************************************************************************ */-->
 {{#intro}}
-<div id="mod_tab_introbox" class="row">
-    <div class="col mb-3">
-        {{{intro}}}
+    <div id="mod_tab_introbox" class="row">
+        <div class="col mb-3">
+            {{{intro}}}
+        </div>
     </div>
-</div>
 {{/intro}}
 <div class="row">
     {{#showMenu}}
-    {{#menu}}
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-header">
-                <h4>{{{name}}}</h4>
+        {{#menu}}
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>{{{name}}}</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {{#items}}
+                                <li class="list-group-item">
+                                    <a href="view.php?id={{{id}}}" title="{{{name}}}">{{{name}}}</a>
+                                </li>
+                            {{/items}}
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="card-body">                
-                <ul class="list-group">
-                    {{#items}}
-                    <li class="list-group-item">
-                        <a href="view.php?id={{{id}}}" title="{{{name}}}">{{{name}}}</a>
-                    </li>
-                    {{/items}}
-                </ul>
-            </div>
-        </div>
-    </div>
-    {{/menu}}
+        {{/menu}}
     {{/showMenu}}
     <div class="col{{#showMenu}}-md-9{{/showMenu}}">
         <ul class="nav nav-tabs" id="TabbedPanelsTabGroup" role="tablist">
             {{#tabs}}
-            <li class="nav-item">
-                <a class="nav-link {{#active}}active{{/active}}" id="tab-{{{id}}}" data-toggle="tab" href="#tab{{{id}}}" role="tab" aria-controls="tab{{{id}}}">{{{name}}}</a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link {{#active}}active{{/active}}" id="tab-{{{id}}}" data-toggle="tab"
+                       href="#tab{{{id}}}" role="tab" aria-controls="tab{{{id}}}">{{{name}}}</a>
+                </li>
             {{/tabs}}
         </ul>
         <div class="tab-content" id="TabbedPanelsTabContent">
             {{#tabs}}
-            <div class="tab-pane fade show {{#active}}active{{/active}} mt-3" id="tab{{{id}}}" role="tabpanel" aria-labelledby="tab{{{id}}}">
-                {{{content}}}
-            </div>
+                <div class="tab-pane fade show {{#active}}active{{/active}} mt-3" id="tab{{{id}}}" role="tabpanel"
+                     aria-labelledby="tab{{{id}}}">
+                    {{{content}}}
+                </div>
             {{/tabs}}
         </div>
     </div>

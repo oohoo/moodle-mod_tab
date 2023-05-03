@@ -50,9 +50,9 @@ class tab_content_file_info extends file_info_stored {
 
 /**
  * Return an array of options for the editor tinyMCE
- * @global stdClass $CFG
  * @param type $context The context ID
- * @return array The array of options for the editor 
+ * @return array The array of options for the editor
+ * @global stdClass $CFG
  */
 function tab_get_editor_options($context) {
     global $CFG;
@@ -61,13 +61,12 @@ function tab_get_editor_options($context) {
 
 /**
  * Prepare an URL. Trim, delete useless tags, etc.
+ * @param string $string The URL to prepare
+ * @return string
  * @global stdClass $CFG
  * @global moodle_page $PAGE
- * @param string $string The URL to prepare
- * @return string 
  */
 function process_urls($string) {
-    global $CFG, $PAGE;
     preg_match_all("/<a href=.*?<\/a>/", $string, $matches);
     foreach ($matches[0] as $mtch) {
         $mtch_bits = explode('"', $mtch);
@@ -86,18 +85,17 @@ function process_urls($string) {
 
 /**
  * Returns general link or file embedding html.
- * @global stdClass $CFG
- * @global moodle_page $PAGE
  * @param string $fullurl
  * @param string $title
  * @param string $clicktoopen
  * @return string html
+ * @global stdClass $CFG
+ * @global moodle_page $PAGE
  */
 function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
-    global $CFG, $PAGE;
+    global $PAGE;
 
     $iframe = true;
-    $force_link = false;
 
     $id_suffix = md5($fullurl);
 
