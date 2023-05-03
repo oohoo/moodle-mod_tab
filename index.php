@@ -38,12 +38,8 @@ $PAGE->navbar->add($strpages);
 echo $OUTPUT->header();
 
 //log the view information
-$event = \mod_tab\event\course_module_instance_list_viewed::create(array(
-    'objectid' => $PAGE->cm->instance,
-    'context' => $PAGE->context,
-));
-$event->add_record_snapshot('course', $PAGE->course);
-$event->add_record_snapshot($PAGE->cm->modname, $tab);
+$event = \mod_tab\event\course_module_instance_list_viewed::create(array('context' => context_course::instance($course->id)));
+$event->add_record_snapshot('course', $course);
 $event->trigger();
 
 
