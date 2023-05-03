@@ -30,7 +30,7 @@ class provider implements
      *
      * @return string - reason of why this plugin does not store users' data.
      */
-    public static function _get_reason() {
+    public static function get_reason(): string {
         return 'privacy:metadata';
     }
 }
