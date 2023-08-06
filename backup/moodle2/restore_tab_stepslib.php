@@ -20,11 +20,9 @@
 /**
  * Structure step to restore one choice activity
  */
-class restore_tab_activity_structure_step extends restore_activity_structure_step
-{
+class restore_tab_activity_structure_step extends restore_activity_structure_step {
 
-    protected function define_structure()
-    {
+    protected function define_structure() {
 
         $paths = array();
         $userinfo = $this->get_setting_value('userinfo');
@@ -37,11 +35,10 @@ class restore_tab_activity_structure_step extends restore_activity_structure_ste
         return $this->prepare_activity_structure($paths);
     }
 
-    protected function process_tab($data)
-    {
+    protected function process_tab($data) {
         global $DB;
 
-        $data = (object) $data;
+        $data = (object)$data;
         $oldid = $data->id;
         $data->course = $this->get_courseid();
         $data->timemodified = $this->apply_date_offset($data->timemodified);
@@ -52,11 +49,10 @@ class restore_tab_activity_structure_step extends restore_activity_structure_ste
         $this->apply_activity_instance($newitemid);
     }
 
-    protected function process_tab_content($data)
-    {
+    protected function process_tab_content($data) {
         global $DB;
 
-        $data = (object) $data;
+        $data = (object)$data;
         $oldid = $data->id;
 
         $data->tabid = $this->get_new_parentid('tab');
@@ -66,8 +62,7 @@ class restore_tab_activity_structure_step extends restore_activity_structure_ste
         $this->set_mapping('tab_content', $oldid, $newitemid, true); //has related files
     }
 
-    protected function after_execute()
-    {
+    protected function after_execute() {
         global $DB;
         // Add tab related files where itemname = tab_content (taken from $this->set_mapping)
         $this->add_related_files('mod_tab', 'intro', null);

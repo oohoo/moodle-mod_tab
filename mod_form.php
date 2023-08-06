@@ -21,16 +21,14 @@ require_once($CFG->libdir . '/filelib.php');
 /**
  * Class for the form of the tab
  */
-class mod_tab_mod_form extends moodleform_mod
-{
+class mod_tab_mod_form extends moodleform_mod {
 
     /**
      * The tab form
      * @global stdClass $CFG
-     * @global moodle_database $DB 
+     * @global moodle_database $DB
      */
-    function definition()
-    {
+    function definition() {
         global $CFG, $DB;
 
         $mform = $this->_form;
@@ -39,51 +37,40 @@ class mod_tab_mod_form extends moodleform_mod
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
         $mform->addElement('text', 'name', get_string('name', 'tab'), array('size' => '45'));
-        if (!empty($CFG->formatstringstriptags))
-        {
+        if (!empty($CFG->formatstringstriptags)) {
             $mform->setType('name', PARAM_TEXT);
-        }
-        else
-        {
+        } else {
             $mform->setType('name', PARAM_CLEANHTML);
         }
         $mform->addRule('name', null, 'required', null, 'client');
 
         //Add Intro
-        $this->add_intro_editor(false);
+        $this->standard_intro_elements(false);
 
         $mform->setDefault('printintro', 0);
         $mform->setAdvanced('printintro', false);
 
         //Have to use this option for postgresqgl to work
         $instance = $this->current->instance;
-        if (empty($instance))
-        {
+        if (empty($instance)) {
             $instance = 0;
         }
 
         //following code used to create tabcontent order numbers
-        if (isset($_POST['optionid']))
-        {
-            $repeatnum = count($_POST['optionid']);
-        }
-        else
-        {
+        $optionid = optional_param_array('optionid', array(), PARAM_INT);
+        if (isset($optionid)) {
+            $repeatnum = count($optionid);
+        } else {
             $repeatnum = 0;
         }
-        if ($repeatnum == 0)
-        {
+        if ($repeatnum == 0) {
             $repeatnum = $DB->count_records('tab_content', array('tabid' => $instance));
         }
         $taborder = 1; //initialize to prevent warnings
-        for ($i = 1; $i <= $repeatnum + 1; $i++)
-        {
-            if ($i == 1)
-            {
+        for ($i = 1; $i <= $repeatnum + 1; $i++) {
+            if ($i == 1) {
                 $taborder = 1;
-            }
-            else
-            {
+            } else {
                 $taborder = $taborder . ',' . $i;
             }
         }
@@ -101,7 +88,7 @@ class mod_tab_mod_form extends moodleform_mod
         $repeatarray[] = $mform->createElement('hidden', 'revision', 1);
         $repeatarray[] = $mform->createElement('select', 'tabcontentorder', get_string('order', 'tab'), $taborderarray);
         $repeatarray[] = $mform->createElement('hidden', 'optionid', 0);
-        
+
         $mform->setType('tabname', PARAM_TEXT);
         $mform->setType('content', PARAM_RAW);
         $mform->setType('externalurl', PARAM_URL);
@@ -109,20 +96,16 @@ class mod_tab_mod_form extends moodleform_mod
         $mform->setType('tabcontentorder', PARAM_INT);
         $mform->setType('optionid', PARAM_INT);
         $mform->setType('content', PARAM_RAW);
-                
-        if ($this->_instance)
-        {
+
+        if ($this->_instance) {
             $repeatno = $DB->count_records('tab_content', array('tabid' => $instance));
             $repeatno += 1;
-        }
-        else
-        {
+        } else {
             $repeatno = 1;
         }
 
         $repeateloptions = array();
-        if (!isset($repeateloptions['tabcontentorder']))
-        {
+        if (!isset($repeateloptions['tabcontentorder'])) {
             $repeateloptions['tabcontentorder']['default'] = $i - 2;
         }
 
@@ -142,7 +125,7 @@ class mod_tab_mod_form extends moodleform_mod
 
         $mform->setType('taborder', PARAM_INT);
         $mform->setType('menuname', PARAM_TEXT);
-        
+
         //*********************************************************************************
         //*********************************************************************************
 
@@ -159,23 +142,19 @@ class mod_tab_mod_form extends moodleform_mod
 
     /**
      * The preprocessing data from the form
-     * @global stdClass $CFG
+     * @param array $default_values
      * @global moodle_database $DB
-     * @param type $default_values 
+     * @global stdClass $CFG
      */
-    function data_preprocessing(&$default_values)
-    {
+    function data_preprocessing(&$default_values) {
         global $CFG, $DB;
-        if ($this->current->instance)
-        {
+        if ($this->current->instance) {
             $options = $DB->get_records('tab_content', array('tabid' => $this->current->instance), 'tabcontentorder');
-            // print_object($options)
             $tabids = array_keys($options);
             $options = array_values($options);
             $context = $this->context;
             $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => 1);
-            foreach (array_keys($options) as $key)
-            {
+            foreach (array_keys($options) as $key) {
                 $default_values['tabname[' . $key . ']'] = $options[$key]->tabname;
 
                 $draftitemid = file_get_submitted_draft_itemid('content[' . $key . ']');

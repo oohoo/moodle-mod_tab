@@ -13,7 +13,19 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-$plugin->version = 2019062404;  // The current module version (Date: YYYYMMDDXX)
-$plugin->requires = 2022111800;
-$plugin->maturity = MATURITY_STABLE;
-$plugin->component = 'mod_tab';
+
+namespace mod_tab\output;
+
+/**
+ * Description of renderer
+ *
+ * @author patrick
+ */
+class renderer extends \plugin_renderer_base {
+
+    public function render_view(\templatable $view) {
+        $data = $view->export_for_template($this);
+        return $this->render_from_template('mod_tab/view', $data);
+    }
+
+}

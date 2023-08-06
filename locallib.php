@@ -22,17 +22,14 @@ require_once("$CFG->dirroot/mod/tab/lib.php");
 /**
  * File browsing support class
  */
-class tab_content_file_info extends file_info_stored
-{
+class tab_content_file_info extends file_info_stored {
 
     /**
      * Returns parent file_info instance
      * @return file_info|null file_info instance or null for root
      */
-    public function get_parent()
-    {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.')
-        {
+    public function get_parent() {
+        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
             return $this->browser->get_file_info($this->context);
         }
         return parent::get_parent();
@@ -42,10 +39,8 @@ class tab_content_file_info extends file_info_stored
      * Returns localised visible name.
      * @return string
      */
-    public function get_visible_name()
-    {
-        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.')
-        {
+    public function get_visible_name() {
+        if ($this->lf->get_filepath() === '/' and $this->lf->get_filename() === '.') {
             return $this->topvisiblename;
         }
         return parent::get_visible_name();
@@ -55,29 +50,25 @@ class tab_content_file_info extends file_info_stored
 
 /**
  * Return an array of options for the editor tinyMCE
- * @global stdClass $CFG
  * @param type $context The context ID
- * @return array The array of options for the editor 
+ * @return array The array of options for the editor
+ * @global stdClass $CFG
  */
-function tab_get_editor_options($context)
-{
+function tab_get_editor_options($context) {
     global $CFG;
     return array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => 0);
 }
 
 /**
  * Prepare an URL. Trim, delete useless tags, etc.
+ * @param string $string The URL to prepare
+ * @return string
  * @global stdClass $CFG
  * @global moodle_page $PAGE
- * @param string $string The URL to prepare
- * @return string 
  */
-function process_urls($string)
-{
-    global $CFG, $PAGE;
+function process_urls($string) {
     preg_match_all("/<a href=.*?<\/a>/", $string, $matches);
-    foreach ($matches[0] as $mtch)
-    {
+    foreach ($matches[0] as $mtch) {
         $mtch_bits = explode('"', $mtch);
         $string = str_replace($mtch, "{$mtch_bits[1]}", $string);
     }
@@ -98,117 +89,25 @@ function process_urls($string)
  * @param string $title
  * @param string $clicktoopen
  * @return string html
- */
-//function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
-//    global $CFG, $PAGE;
-//
-//    if ($fullurl instanceof moodle_url) {
-//        $fullurl = $fullurl->out();
-//    }
-//
-//    $iframe = false;
-//
-//    $param = '<param name="src" value="'.$fullurl.'" />';
-//
-//    // IE can not embed stuff properly if stored on different server
-//    // that is why we use iframe instead, unfortunately this tag does not validate
-//    // in xhtml strict mode
-//    if ($mimetype === 'text/html' and check_browser_version('MSIE', 5)) {
-//        // The param tag needs to be removed to avoid trouble in IE.
-//        $param = '';
-//        if (preg_match('(^https?://[^/]*)', $fullurl, $matches)) {
-//            if (strpos($CFG->wwwroot, $matches[0]) !== 0) {
-//                $iframe = true;
-//            }
-//        }
-//    }
-//
-//    if (check_browser_version('Chrome')) {
-//        $iframe = true;
-//    }
-//
-//    if ($iframe) {
-//        $fullurl = str_replace('://', '%3A%2F%2F', $fullurl);
-//        $code = <<<EOT
-//<div class="resourcecontent resourcegeneral">
-//  <iframe src="http://docs.google.com/viewer?url=$fullurl&embedded=true" width="800" height="600" style="border: none;">
-//    $clicktoopen
-//  </iframe>
-//</div>
-//EOT;
-//    } else {
-//        $code = <<<EOT
-//<div class="resourcecontent resourcegeneral">
-//  <object id="resourceobject" data="$fullurl" type="$mimetype"  width="800" height="600">
-//    $param
-//    $clicktoopen
-//  </object>
-//</div>
-//EOT;
-//    }
-//
-//    // the size is hardcoded in the boject obove intentionally because it is adjusted by the following function on-the-fly
-//    $PAGE->requires->js_init_call('M.util.init_maximised_embed', array('resourceobject'), true);
-//
-//    return $code;
-//}
-
-/**
- * Returns general link or file embedding html.
  * @global stdClass $CFG
  * @global moodle_page $PAGE
- * @param string $fullurl
- * @param string $title
- * @param string $clicktoopen
- * @return string html
  */
-function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype)
-{
-    global $CFG, $PAGE;
+function tab_embed_general($fullurl, $title, $clicktoopen, $mimetype) {
+    global $PAGE;
 
-    $iframe = false;
-    $force_link = false;
-    // IE can not embed stuff properly if stored on different server
-    // that is why we use iframe instead, unfortunately this tag does not validate
-    // in xhtml strict mode
-    if ($mimetype === 'text/html' and check_browser_version('MSIE', 5))
-    {
-        if (preg_match('(^https?://[^/]*)', $fullurl, $matches))
-        {
-            //make sure we aren't redirecting to a moodle page
-            if (strpos($CFG->wwwroot, $matches[0]) !== 0)
-            {
-                $force_link = true;
-            }
-            else
-            { //if it is a moodle then embed as iframe
-                $iframe = true;
-            }
-        }
-    }
+    $iframe = true;
+
     $id_suffix = md5($fullurl);
-    //we force the link because IE doesn't support embedding web pages
-    if ($force_link)
-    {
-        $clicktoopen = get_string('embed_fail_msg_ie', 'tab') . "<a href='$fullurl' target='_blank'>" . get_string('embed_fail_link_text', 'tab') . '</a>';
+
+    if ($iframe) {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
-        $clicktoopen
-</div>
-EOT;
-    }
-    elseif ($iframe)
-    {
-        $code = <<<EOT
-<div class="resourcecontent resourcegeneral">
-  <iframe id="resourceobject_$id_suffix" src="$fullurl">
+  <iframe id="resourceobject_$id_suffix" src="$fullurl" class="mod-tab-embedded">
     $clicktoopen
   </iframe>
 </div>
 EOT;
-    }
-    else
-    {
+    } else {
         $code = <<<EOT
 <div class="resourcecontent resourcegeneral">
   <object id="resourceobject_$id_suffix" data="$fullurl" type="$mimetype">
@@ -219,7 +118,7 @@ EOT;
 EOT;
     }
 
-    $PAGE->requires->js_init_call('M.mod_tab.init_maximised_embed', array("resourceobject_$id_suffix"), true);
+    $PAGE->requires->js_call_amd('mod_tab/module', 'init', ["resourceobject_$id_suffix"]);
 
     return $code;
 }
