@@ -1,4 +1,18 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
  * *************************************************************************
@@ -13,10 +27,10 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
-defined('MOODLE_INTERNAL') || die;
 
 /**
  * List of features supported in Tab display
+ *
  * @param string $feature FEATURE_xx constant for requested feature
  * @return bool|null True if module supports feature, false if not, null if doesn't know
  * @uses FEATURE_IDNUMBER
@@ -28,38 +42,21 @@ defined('MOODLE_INTERNAL') || die;
  * @uses FEATURE_GRADE_HAS_GRADE
  * @uses FEATURE_GRADE_OUTCOMES
  */
-function tab_supports($feature) {
-    switch ($feature) {
-        case FEATURE_IDNUMBER:
-            return false;
-        case FEATURE_GROUPS:
-            return false;
-        case FEATURE_GROUPINGS:
-            return false;
-        case FEATURE_MOD_INTRO:
-            return true;
-        case FEATURE_COMPLETION_TRACKS_VIEWS:
-            return true;
-        case FEATURE_GRADE_HAS_GRADE:
-            return false;
-        case FEATURE_GRADE_OUTCOMES:
-            return false;
-        case FEATURE_MOD_ARCHETYPE:
-            return MOD_ARCHETYPE_RESOURCE;
-        case FEATURE_BACKUP_MOODLE2:
-            return true;
-
-        default:
-            return null;
-    }
+function tab_supports(string $feature): ?bool {
+    return match ($feature) {
+        FEATURE_IDNUMBER, FEATURE_GROUPS, FEATURE_GROUPINGS, FEATURE_GRADE_HAS_GRADE, FEATURE_GRADE_OUTCOMES => false,
+        FEATURE_MOD_INTRO, FEATURE_COMPLETION_TRACKS_VIEWS, FEATURE_BACKUP_MOODLE2 => true,
+        FEATURE_MOD_ARCHETYPE => MOD_ARCHETYPE_RESOURCE,
+        default => null,
+    };
 }
 
 /**
  * Returns all other caps used in module
  * @return array
  */
-function tab_get_extra_capabilities() {
-    return array('moodle/site:accessallgroups');
+function tab_get_extra_capabilities(): array {
+    return ['moodle/site:accessallgroups'];
 }
 
 /**
@@ -67,33 +64,32 @@ function tab_get_extra_capabilities() {
  * @param $data the data submitted from the reset course.
  * @return array status array
  */
-function tab_reset_userdata($tab) {
-    return array();
+function tab_reset_userdata($tab): array {
+    return [];
 }
 
 /**
  * List of view style log actions
  * @return array
  */
-function tab_get_view_actions() {
-    return array('view', 'view all');
+function tab_get_view_actions(): array {
+    return ['view', 'view all'];
 }
 
 /**
  * List of update style log actions
  * @return array
  */
-function tab_get_post_actions() {
-    return array('update', 'add');
+function tab_get_post_actions(): array {
+    return ['update', 'add'];
 }
 
 /**
  * Add tab display instance.
- * @param object $data
- * @param object $mform
+ * @param object $tab
  * @return int new page instance id
  */
-function tab_add_instance($tab) {
+function tab_add_instance($tab): int {
     global $CFG, $DB;
 
     require_once("$CFG->libdir/resourcelib.php");
@@ -101,18 +97,25 @@ function tab_add_instance($tab) {
     $cmid = $tab->coursemodule;
     $tab->timemodified = time();
 
-
-    //insert tabs and content
+    // Insert tabs and content.
     if ($tab->id = $DB->insert_record("tab", $tab)) {
 
-        // we need to use context now, so we need to make sure all needed info is already in db
-        $DB->set_field('course_modules', 'instance', $tab->id, array('id' => $cmid));
+        // We need to use context now, so we need to make sure all needed info is already in db.
+        $DB->set_field('course_modules', 'instance', $tab->id, ['id' => $cmid]);
         $context = context_module::instance($cmid);
-        $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => true);
+        $editoroptions = [
+            'subdirs' => 1,
+            'maxbytes' => $CFG->maxbytes,
+            'maxfiles' => -1,
+            'changeformat' => 1,
+            'context' => $context,
+            'noclean' => 1,
+            'trusttext' => true,
+        ];
 
         foreach ($tab->tabname as $key => $value) {
             $value = trim($value);
-            if (isset($value) && $value <> '') {
+            if (!empty($value)) {
                 $option = new stdClass();
                 $option->tabname = $value;
                 $option->tabid = $tab->id;
@@ -129,19 +132,26 @@ function tab_add_instance($tab) {
                     $option->externalurl = $tab->content[$key]['externalurl'];
                 }
                 $option->timemodified = time();
-                //Must get id number from inserted record to update the editor field (tabcontent)
-                $newtab_content_id = $DB->insert_record("tab_content", $option);
+                // Must get id number from inserted record to update the editor field (tabcontent).
+                $newtabcontentid = $DB->insert_record("tab_content", $option);
 
-                //tab content is now an array due to the new editor
-                //In order to enter file information from the editor
-                //We must now update the record once it has been created
+                // Tab content is now an array due to the new editor.
+                // In order to enter file information from the editor.
+                // We must now update the record once it has been created.
 
                 if (isset($tab->content[$key]['text'])) {
                     $draftitemid = $tab->content[$key]['itemid'];
                     if ($draftitemid) {
                         $tabcontentupdate = new stdClass();
-                        $tabcontentupdate->id = $newtab_content_id;
-                        $tabcontentupdate->tabcontent = file_save_draft_area_files($draftitemid, $context->id, 'mod_tab', 'content', $newtab_content_id, $editoroptions, $tab->content[$key]['text']);
+                        $tabcontentupdate->id = $newtabcontentid;
+                        $tabcontentupdate->tabcontent = file_save_draft_area_files(
+                            $draftitemid,
+                            $context->id,
+                            'mod_tab',
+                            'content', $newtabcontentid,
+                            $editoroptions,
+                            $tab->content[$key]['text']
+                        );
                         $DB->update_record('tab_content', $tabcontentupdate);
                     }
                 }
@@ -156,12 +166,12 @@ function tab_add_instance($tab) {
  * (defined by the form in mod.html) this function
  * will update an existing instance with new data.
  *
- * @param object $instance An object from the form in mod.html
+ * @param object $tab An object from the form in mod.html
  * @return boolean Success/Fail
  * *@global stdClass $CFG
  * @global moodle_database $DB
  */
-function tab_update_instance($tab) {
+function tab_update_instance($tab): bool {
     global $CFG, $DB;
 
     require_once("$CFG->libdir/resourcelib.php");
@@ -173,49 +183,67 @@ function tab_update_instance($tab) {
 
     foreach ($tab->tabname as $key => $value) {
 
-        // we need to use context now, so we need to make sure all needed info is already in db
-        $DB->set_field('course_modules', 'instance', $tab->id, array('id' => $cmid));
+        // We need to use context now, so we need to make sure all needed info is already in db.
+        $DB->set_field('course_modules', 'instance', $tab->id, ['id' => $cmid]);
         $context = context_module::instance($cmid);
-        $editoroptions = array('subdirs' => 1, 'maxbytes' => $CFG->maxbytes, 'maxfiles' => -1, 'changeformat' => 1, 'context' => $context, 'noclean' => 1, 'trusttext' => true);
-
+        $editoroptions = [
+            'subdirs' => 1,
+            'maxbytes' => $CFG->maxbytes,
+            'maxfiles' => -1,
+            'changeformat' => 1,
+            'context' => $context,
+            'noclean' => 1,
+            'trusttext' => true,
+        ];
 
         $value = trim($value);
         $option = new stdClass();
         $option->tabname = $value;
         $option->tabcontentorder = $tab->tabcontentorder[$key];
         $option->externalurl = $tab->externalurl[$key];
-        //tab content is now an array due to the new editor
+        // Tab content is now an array due to the new editor.
         $draftitemid = $tab->content[$key]['itemid'];
 
         if ($draftitemid) {
-            $option->tabcontent = file_save_draft_area_files($draftitemid, $context->id, 'mod_tab', 'content', $tab->optionid[$key], $editoroptions, $tab->content[$key]['text']);
+            $option->tabcontent = file_save_draft_area_files(
+                $draftitemid, $context->id,
+                'mod_tab',
+                'content',
+                $tab->optionid[$key],
+                $editoroptions,
+                $tab->content[$key]['text']);
         }
         $option->contentformat = $tab->content[$key]['format'];
         $option->tabid = $tab->id;
         $option->timemodified = time();
 
-        if (isset($tab->optionid[$key]) && !empty($tab->optionid[$key])) {//existing tab record
+        if (isset($tab->optionid[$key]) && !empty($tab->optionid[$key])) {// Existing tab record.
             $option->id = $tab->optionid[$key];
-            if (isset($value) && $value <> '') {
+            if (!empty($value)) {
                 $DB->update_record("tab_content", $option);
-            } else { //empty old option - needs to be deleted.
-                $DB->delete_records("tab_content", array("id" => $option->id));
+            } else { // Empty old option - needs to be deleted.
+                $DB->delete_records("tab_content", ["id" => $option->id]);
             }
-        } else {
-            if (isset($value) && $value <> '') {
-                $newtab_content_id = $DB->insert_record("tab_content", $option);
-                //tab content is now an array due to the new editor
-                //In order to enter file information from the editor
-                //We must now update the record once it has been created
+        } else if (!empty($value)) {
+            $newtabcontentid = $DB->insert_record("tab_content", $option);
+            // Tab content is now an array due to the new editor.
+            // In order to enter file information from the editor.
+            // We must now update the record once it has been created.
 
-                if (isset($tab->content[$key]['text'])) {
-                    $draftitemid = $tab->content[$key]['itemid'];
-                    if ($draftitemid) {
-                        $tabcontentupdate = new stdClass();
-                        $tabcontentupdate->id = $newtab_content_id;
-                        $tabcontentupdate->tabcontent = file_save_draft_area_files($draftitemid, $context->id, 'mod_tab', 'content', $newtab_content_id, $editoroptions, $tab->content[$key]['text']);
-                        $DB->update_record('tab_content', $tabcontentupdate);
-                    }
+            if (isset($tab->content[$key]['text'])) {
+                $draftitemid = $tab->content[$key]['itemid'];
+                if ($draftitemid) {
+                    $tabcontentupdate = new stdClass();
+                    $tabcontentupdate->id = $newtabcontentid;
+                    $tabcontentupdate->tabcontent = file_save_draft_area_files(
+                        $draftitemid, $context->id,
+                        'mod_tab',
+                        'content',
+                        $newtabcontentid,
+                        $editoroptions,
+                        $tab->content[$key]['text']
+                    );
+                    $DB->update_record('tab_content', $tabcontentupdate);
                 }
             }
         }
@@ -232,21 +260,21 @@ function tab_update_instance($tab) {
  * @return boolean Success/Failure
  * *@global moodle_database $DB
  */
-function tab_delete_instance($id) {
+function tab_delete_instance(int $id): bool {
     global $DB;
 
-    if (!$tab = $DB->get_record("tab", array("id" => "$id"))) {
+    if (!$tab = $DB->get_record("tab", ["id" => "$id"])) {
         return false;
     }
 
     $result = true;
 
-    # Delete any dependent records here #
+    // Delete any dependent records here.
 
-    if (!$DB->delete_records("tab", array("id" => "$tab->id"))) {
+    if (!$DB->delete_records("tab", ["id" => "$tab->id"])) {
         $result = false;
     }
-    if (!$DB->delete_records("tab_content", array("tabid" => "$tab->id"))) {
+    if (!$DB->delete_records("tab_content", ["tabid" => "$tab->id"])) {
         $result = false;
     }
 
@@ -263,8 +291,8 @@ function tab_delete_instance($id) {
  * @package  mod_tab
  * @category files
  */
-function tab_get_file_areas($course, $cm, $context) {
-    $areas = array();
+function tab_get_file_areas($course, $cm, $context): array {
+    $areas = [];
     $areas['content'] = get_string('content', 'tab');
     return $areas;
 }
@@ -272,16 +300,16 @@ function tab_get_file_areas($course, $cm, $context) {
 /**
  * File browsing support for languagelab module content area.
  *
- * @param stdClass $browser file browser instance
- * @param stdClass $areas file areas
+ * @param file_browser $browser file browser instance
+ * @param array $areas file areas
  * @param stdClass $course course object
  * @param stdClass $cm course module object
- * @param stdClass $context context object
+ * @param \core\context $context context object
  * @param string $filearea file area
  * @param int $itemid item ID
  * @param string $filepath file path
  * @param string $filename file name
- * @return file_info instance or null if not found
+ * @return file_info_stored instance or null if not found
  * @package  mod_tab
  * @category files
  */
@@ -289,7 +317,7 @@ function tab_get_file_info($browser, $areas, $course, $cm, $context, $filearea, 
     global $CFG;
 
     if (!has_capability('moodle/course:managefiles', $context)) {
-        // students can not peak here!
+        // Students can not peak here!
         return null;
     }
 
@@ -301,10 +329,10 @@ function tab_get_file_info($browser, $areas, $course, $cm, $context, $filearea, 
 
         $urlbase = $CFG->wwwroot . '/pluginfile.php';
         if (!$storedfile = $fs->get_file($context->id, 'mod_tab', 'content', $itemid, $filepath, $filename)) {
-            if ($filepath === '/' and $filename === '.') {
+            if ($filepath === '/' && $filename === '.') {
                 $storedfile = new virtual_root_file($context->id, 'mod_tab', 'content', $itemid);
             } else {
-                // not found
+                // Not found.
                 return null;
             }
         }
@@ -312,7 +340,7 @@ function tab_get_file_info($browser, $areas, $course, $cm, $context, $filearea, 
         return new tab_content_file_info($browser, $context, $storedfile, $urlbase, $areas[$filearea], true, true, true, false);
     }
 
-    // note: page_intro handled in file_browser automatically
+    // Note: page_intro handled in file_browser automatically.
 
     return null;
 }
@@ -328,45 +356,46 @@ function tab_get_file_info($browser, $areas, $course, $cm, $context, $filearea, 
  * @param bool $forcedownload
  * @return bool false if file not found, does not return if found - justsend the file
  * @global moodle_database $DB
- * @global stdClass $CFG
  */
 function tab_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload) {
-    global $CFG, $DB;
+    global $DB;
 
-    //The following code is for security
+    // The following code is for security.
     require_course_login($course, true, $cm);
 
     if ($context->contextlevel != CONTEXT_MODULE) {
         return false;
     }
 
-    $fileareas = array('mod_tab', 'content');
+    $fileareas = ['mod_tab', 'content'];
     if (!in_array($filearea, $fileareas)) {
         return false;
     }
-    //id of the content row
+    // Id of the content row.
     $tabcontentid = (int)array_shift($args);
 
-    //Security - Check if exists
-    if (!$tabcontent = $DB->get_record('tab_content', array('id' => $tabcontentid))) {
+    // Security - Check if exists.
+    if (!$DB->record_exists('tab_content', ['id' => $tabcontentid])) {
         return false;
     }
 
-    if (!$tab = $DB->get_record('tab', array('id' => $cm->instance))) {
+    if (!$DB->record_exists('tab', ['id' => $cm->instance])) {
         return false;
     }
 
-    //Now gather file information
+    // Now gather file information.
     $fs = get_file_storage();
     $relativepath = implode('/', $args);
     $fullpath = "/$context->id/mod_tab/$filearea/$tabcontentid/$relativepath";
 
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+    $file = $fs->get_file_by_hash(sha1($fullpath));
+    if (is_bool($file) || $file->is_directory()) {
         return false;
     }
 
-    // finally send the file
+    // Finally send the file.
     send_stored_file($file, 0, 0, $forcedownload);
+    return true;
 }
 
 /**
@@ -376,15 +405,15 @@ function tab_pluginfile($course, $cm, $context, $filearea, $args, $forcedownload
  * $return->time = the time they did it
  * $return->info = a short text description
  *
- * @return null
+ * @return ?stdClass
  * @global moodle_database $DB
  * @todo Finish documenting this function
  * */
 function tab_user_outline($course, $user, $mod, $tab) {
     global $DB;
 
-    if ($logs = $DB->get_records('log', array('userid' => $user->id, 'module' => 'tab',
-        'action' => 'view', 'info' => $tab->id . ' - ' . $tab->name), 'time ASC')) {
+    if ($logs = $DB->get_records('log', ['userid' => $user->id, 'module' => 'tab',
+        'action' => 'view', 'info' => $tab->id . ' - ' . $tab->name, ], 'time ASC')) {
 
         $numviews = count($logs);
         $lastlog = array_pop($logs);
@@ -395,23 +424,21 @@ function tab_user_outline($course, $user, $mod, $tab) {
 
         return $result;
     }
-    return NULL;
+    return null;
 }
 
 /**
  * Print a detailed representation of what a user has done with
  * a given particular instance of this module, for user activity reports.
  *
- * @return boolean
  * @global moodle_database $DB
- * @global stdClass $CFG
  * @todo Finish documenting this function
  * */
-function tab_user_complete($course, $user, $mod, $tab) {
-    global $CFG, $DB;
+function tab_user_complete($course, $user, $mod, $tab): void {
+    global $DB;
 
-    if ($logs = $DB->get_records('log', array('userid' => $user->id, 'module' => 'tab',
-        'action' => 'view', 'info' => $tab->id . ' - ' . $tab->name), 'time ASC')) {
+    if ($logs = $DB->get_records('log', ['userid' => $user->id, 'module' => 'tab',
+        'action' => 'view', 'info' => $tab->id . ' - ' . $tab->name, ], 'time ASC')) {
         $numviews = count($logs);
         $lastlog = array_pop($logs);
 
@@ -433,10 +460,9 @@ function tab_user_complete($course, $user, $mod, $tab) {
  * @global $CFG
  * @todo Finish documenting this function
  * */
-function tab_print_recent_activity($course, $viewfullnames, $timestart) {
-    global $CFG;
+function tab_print_recent_activity($course, $viewfullnames, $timestart): bool {
 
-    return false;  //  True if anything was printed, otherwise false
+    return false;  // True if anything was printed, otherwise false.
 }
 
 /**
@@ -446,17 +472,17 @@ function tab_print_recent_activity($course, $viewfullnames, $timestart) {
  *
  * See {@link get_array_of_activities()} in course/lib.php
  *
- * @param object $coursemodule
- * @return object info
+ * @param stdClass $coursemodule
+ * @return ?stdClass info
  * @global stdClass $CFG
  * @global moodle_database $DB
  */
-function tab_get_coursemodule_info($coursemodule) {
+function tab_get_coursemodule_info($coursemodule): stdClass|null {
     global $CFG, $DB;
     require_once("$CFG->libdir/resourcelib.php");
 
-    if (!$tab = $DB->get_record('tab', array('id' => $coursemodule->instance), 'id, name')) {
-        return NULL;
+    if (!$tab = $DB->get_record('tab', ['id' => $coursemodule->instance], 'id, name')) {
+        return null;
     }
 
     $info = new stdClass();

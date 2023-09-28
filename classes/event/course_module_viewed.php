@@ -23,7 +23,6 @@
  */
 
 namespace mod_tab\event;
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * The mod_page course module viewed event class.
@@ -38,14 +37,14 @@ class course_module_viewed extends \core\event\course_module_viewed {
     /**
      * Init method.
      */
-    protected function init() {
+    protected function init(): void {
         $this->data['crud'] = 'r';
         $this->data['edulevel'] = self::LEVEL_PARTICIPATING;
         $this->data['objecttable'] = 'tab';
     }
 
-    public static function get_objectid_mapping() {
-        return array('db' => 'tab', 'restore' => 'tab');
+    public static function get_objectid_mapping(): array {
+        return ['db' => 'tab', 'restore' => 'tab'];
     }
 }
 
