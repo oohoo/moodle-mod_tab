@@ -1,6 +1,20 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
+/*
  * *************************************************************************
  * *                         OOHOO - Tab Display                          **
  * *************************************************************************
@@ -13,13 +27,16 @@
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later  **
  * *************************************************************************
  * ************************************************************************ */
+
+use mod_tab\event\course_module_instance_list_viewed;
+
 require('../../config.php');
 
-$id = required_param('id', PARAM_INT); // course id
+$id = required_param('id', PARAM_INT); // Course id.
 
-$course = $DB->get_record('course', array('id' => $id), '*', MUST_EXIST);
+$course = $DB->get_record('course', ['id' => $id], '*', MUST_EXIST);
 
-require_course_login($course, true);
+require_course_login($course);
 $PAGE->set_pagelayout('incourse');
 
 $strpage = get_string('modulename', 'tab');
@@ -31,14 +48,14 @@ $strlastmodified = get_string('lastmodified');
 
 $modinfo = get_fast_modinfo($course);
 
-$PAGE->set_url('/mod/tab/index.php', array('id' => $course->id));
+$PAGE->set_url('/mod/tab/index.php', ['id' => $course->id]);
 $PAGE->set_title($course->shortname . ': ' . $strpages);
 $PAGE->set_heading($course->fullname);
 $PAGE->navbar->add($strpages);
 echo $OUTPUT->header();
 
-//log the view information
-$event = \mod_tab\event\course_module_instance_list_viewed::create(array('context' => context_course::instance($course->id)));
+// Log the view information.
+$event = course_module_instance_list_viewed::create(['context' => context_course::instance($course->id)]);
 $event->add_record_snapshot('course', $course);
 $event->trigger();
 
@@ -51,18 +68,18 @@ if (!$tabs = get_all_instances_in_course('tab', $course)) {
 $usesections = course_format_uses_sections($course->format);
 
 if ($usesections) {
-    $sections = $modinfo->get_section_info_all($course->id);
+    $sections = $modinfo->get_section_info_all();
 }
 
 $table = new html_table();
 $table->attributes['class'] = 'generaltable mod_index';
 
 if ($usesections) {
-    $table->head = array($strsectionname, $strname, $strintro);
-    $table->align = array('center', 'left', 'left');
+    $table->head = [$strsectionname, $strname, $strintro];
+    $table->align = ['center', 'left', 'left'];
 } else {
-    $table->head = array($strlastmodified, $strname, $strintro);
-    $table->align = array('left', 'left', 'left');
+    $table->head = [$strlastmodified, $strname, $strintro];
+    $table->align = ['left', 'left', 'left'];
 }
 
 
@@ -84,12 +101,12 @@ foreach ($tabs as $tab) {
         $printsection = '<span class="smallinfo">' . userdate($tab->timemodified) . "</span>";
     }
 
-    $class = $tab->visible ? '' : 'class="dimmed"'; // hidden modules are dimmed
+    $class = $tab->visible ? '' : 'class="dimmed"'; // Hidden modules are dimmed.
 
-    $table->data[] = array(
+    $table->data[] = [
         $printsection,
         "<a $class href=\"view.php?id=$cm->id\">" . format_string($tab->name) . "</a>",
-        format_module_intro('tab', $tab, $cm->id));
+        format_module_intro('tab', $tab, $cm->id), ];
 }
 
 echo html_writer::table($table);
